@@ -36,6 +36,10 @@ class DNABert(HuggingFaceModel):
             dna_bert_config.problem_type = 'regression'
             dna_bert_config.num_labels = n_tasks
             model = BertForSequenceClassification(dna_bert_config)
+        elif task == 'regression':
+            dna_bert_config.problem_type = 'regression'
+            dna_bert_config.num_labels = n_tasks
+            model = BertForSequenceClassification(dna_bert_config)
         elif task == 'classification':
             if n_tasks == 1:
                 dna_bert_config.problem_type = 'single_label_classification'
