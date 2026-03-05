@@ -19,6 +19,7 @@ import os
 from typing import Tuple
 
 import numpy as np
+import torch
 
 import deepchem as dc
 from deepchem.models.torch_models.dna_bert_model import DNABert
@@ -76,7 +77,17 @@ def load_gue_prom_core_all() -> Tuple[dc.data.Dataset, dc.data.Dataset]:
 
 
 def build_dnabert_model(model_dir: str) -> DNABert:
-    """Construct a DNABert model configured for binary classification."""
+    """Construct a DNABert model configured for binary classification.
+
+    If a CUDA GPU is available, the model is placed on GPU; otherwise it runs on CPU.
+    """
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print(f"Using CUDA device for DNABert: {torch.cuda.get_device_name(0)}")
+    else:
+        device = torch.device("cpu")
+        print("CUDA not available, using CPU for DNABert.")
+
     # DNABert internally uses the DNABERT-2 tokenizer via HuggingFace's
     # `AutoTokenizer.from_pretrained("zhihan1996/DNABERT-2-117M")`.
     return DNABert(
@@ -85,6 +96,7 @@ def build_dnabert_model(model_dir: str) -> DNABert:
         n_tasks=1,
         model_dir=model_dir,
         batch_size=16,
+        device=device,
     )
 
 
