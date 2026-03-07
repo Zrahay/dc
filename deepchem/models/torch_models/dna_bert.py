@@ -11,7 +11,7 @@ from transformers import AutoTokenizer
 try:
     import torch
     has_torch = True
-except Exception:  # pragma: no cover
+except Exception:
     has_torch = False
 
 
