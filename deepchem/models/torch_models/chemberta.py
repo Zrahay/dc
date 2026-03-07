@@ -36,10 +36,10 @@ class Chemberta(HuggingFaceModel):
     ----------
     task: str
         The task defines the type of learning task in the model. The supported tasks are
-         - `mlm` - masked language modeling commonly used in pretraining
-         - `mtr` - multitask regression - a task used for both pretraining base models and finetuning
-         - `regression` - use it for regression tasks, like property prediction
-         - `classification` - use it for classification tasks
+        - `mlm` - masked language modeling commonly used in pretraining
+        - `mtr` - multitask regression - a task used for both pretraining base models and finetuning
+        - `regression` - use it for regression tasks, like property prediction
+        - `classification` - use it for classification tasks
     tokenizer_path: str
         Path containing pretrained tokenizer used to tokenize SMILES string for model inputs. The tokenizer path can either be a huggingFace tokenizer model or a path in the local machine containing the tokenizer.
     n_tasks: int, default 1
@@ -92,16 +92,16 @@ class Chemberta(HuggingFaceModel):
     """
 
     def __init__(self,
-                 task: str,
-                 tokenizer_path: str = 'seyonec/PubChem10M_SMILES_BPE_60k',
-                 n_tasks: int = 1,
-                 config: Dict[Any, Any] = {},
-                 **kwargs):
+                task: str,
+                tokenizer_path: str = 'seyonec/PubChem10M_SMILES_BPE_60k',
+                n_tasks: int = 1,
+                config: Dict[Any, Any] = {},
+                **kwargs):
         self.n_tasks = n_tasks
         tokenizer = RobertaTokenizerFast.from_pretrained(tokenizer_path)
         model: PreTrainedModel
         chemberta_config = RobertaConfig(vocab_size=tokenizer.vocab_size,
-                                         **config)
+                                        **config)
         if task == 'mlm':
             model = RobertaForMaskedLM(chemberta_config)
         elif task == 'mtr':
