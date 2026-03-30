@@ -49,6 +49,45 @@ def smiles_multitask_regression_dataset():
 
 
 @pytest.fixture
+def dna_regression_dataset(tmpdir):
+    sequences = [
+        "ACGTACGTACGT",
+        "GGGTTTAAACCC",
+        "TATATATATATA",
+        "CCCCGGGGAAAA",
+    ]
+    labels = [0.1, 0.9, -0.2, 0.5]
+    df = pd.DataFrame(list(zip(sequences, labels)),
+                      columns=["sequence", "task1"])
+    filepath = os.path.join(tmpdir, 'dna.csv')
+    df.to_csv(filepath)
+
+    loader = dc.data.CSVLoader(["task1"],
+                                feature_field="sequence",
+                                featurizer=dc.feat.DummyFeaturizer())
+    dataset = loader.create_dataset(filepath)
+    return dataset
+
+
+@pytest.fixture
+def dna_multitask_regression_dataset():
+    import numpy as np
+    sequences = [
+        "ACGTACGTACGT",
+        "GGGTTTAAACCC",
+        "TATATATATATA",
+        "CCCCGGGGAAAA",
+    ]
+    labels = np.array([[0.1, 0.3], [0.9, 0.2], [-0.2, 0.7],
+                       [0.5, -0.1]]).astype(np.float32)
+    X = np.asarray(sequences, dtype=object)
+    w = np.ones_like(labels, dtype=np.float32)
+    ids = np.asarray([str(i) for i in range(len(sequences))], dtype=object)
+    dataset = dc.data.NumpyDataset(X=X, y=labels, w=w, ids=ids)
+    return dataset
+
+
+@pytest.fixture
 def protein_classification_dataset(tmpdir):
     protein = [
         "M G L P V S W A P P A L W V L G C C A L L L S L W A",
